@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from 'react';
 import { parseAllCSV } from '../lib/parser';
 import { buildCompanyProfiles, computeAggregateStats, computePackageDistribution, computeHighROISkills } from '../lib/engine';

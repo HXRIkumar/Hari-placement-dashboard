@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from 'react';
 import { HARI_PROFILE } from '../lib/constants';
 import { ShieldCheck, ShieldX, AlertTriangle } from 'lucide-react';
