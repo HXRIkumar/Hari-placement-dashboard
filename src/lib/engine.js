@@ -189,6 +189,8 @@ export function computeAggregateStats(profiles) {
   const safeCTCs = safe.map((p) => p.avgCTC).filter((c) => c > 0);
   const allCTCs = profiles.map((p) => p.avgCTC).filter((c) => c > 0);
 
+  const highConfidenceProfiles = profiles.filter(p => p.totalApplied > CONFIDENCE_THRESHOLD);
+
   return {
     totalCompanies: profiles.length,
     safeCount: safe.length,
@@ -202,9 +204,9 @@ export function computeAggregateStats(profiles) {
       : 0,
     maxSafeCTC: safeCTCs.length > 0 ? parseFloat(Math.max(...safeCTCs).toFixed(2)) : 0,
     medianCTC: computeMedian(allCTCs),
-    avgSelectionRate: profiles.length > 0
+    avgSelectionRate: highConfidenceProfiles.length > 0
       ? parseFloat(
-          (profiles.reduce((s, p) => s + p.avgSelectionRate, 0) / profiles.length * 100).toFixed(2)
+          (highConfidenceProfiles.reduce((s, p) => s + p.avgSelectionRate, 0) / highConfidenceProfiles.length * 100).toFixed(2)
         )
       : 0,
   };
@@ -246,4 +248,39 @@ function computeMedian(arr) {
   return sorted.length % 2 !== 0
     ? parseFloat(sorted[mid].toFixed(2))
     : parseFloat(((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2));
+}
+
+/**
+ * Compute the highest ROI focus skills based on accessible companies.
+ * Uses selection rate and CTC as ROI multipliers.
+ */
+export function computeHighROISkills(profiles) {
+  const skills = { dsa: 0, dev: 0, aptitude: 0, core: 0 };
+  
+  const accessible = profiles.filter(p => p.eligibility.status !== 'blocked');
+  
+  for (const p of accessible) {
+    if (p.totalApplied <= CONFIDENCE_THRESHOLD) continue; // Noise filter
+    // Simple ROI heuristic: average CTC * selection rate
+    const roiWeight = p.avgCTC * p.avgSelectionRate;
+    
+    for (const [skill, percent] of Object.entries(p.skillFocus)) {
+      skills[skill] += (percent / 100) * roiWeight;
+    }
+  }
+
+  const result = Object.keys(skills).map(skill => ({
+    id: skill,
+    name: skill === 'dsa' ? 'DSA & Problem Solving' :
+          skill === 'dev' ? 'Development & Projects' :
+          skill === 'aptitude' ? 'Aptitude & Reasoning' : 'Core CS Fundamentals',
+    score: skills[skill],
+  })).sort((a, b) => b.score - a.score);
+  
+  // Normalize for UI progress bars (0-100)
+  const maxScore = result[0]?.score || 1;
+  return result.map(r => ({
+    ...r,
+    normalized: Math.round((r.score / maxScore) * 100)
+  }));
 }
