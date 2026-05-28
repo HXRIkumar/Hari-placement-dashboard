@@ -5,9 +5,9 @@ import EligibilityWall from './EligibilityWall';
 import PackageDistribution from './PackageDistribution';
 import SelectionRatioChart from './SelectionRatioChart';
 import PrepTimeline from './PrepTimeline';
-import { Building2, ShieldCheck, ShieldX, TrendingUp, Search, ChevronRight } from 'lucide-react';
+import { Building2, ShieldCheck, ShieldX, TrendingUp, Search, ChevronRight, Zap } from 'lucide-react';
 
-export default function MacroView({ profiles, stats, packageDist }) {
+export default function MacroView({ profiles, stats, packageDist, highROISkills }) {
   const { selectCompany } = useCompany();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
@@ -86,6 +86,31 @@ export default function MacroView({ profiles, stats, packageDist }) {
 
       {/* Eligibility Wall */}
       <EligibilityWall profiles={profiles} stats={stats} />
+
+      {/* Top High-ROI Focus Skills */}
+      {highROISkills && highROISkills.length > 0 && (
+        <div className="bg-white rounded-xl border border-zinc-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Zap className="w-5 h-5 text-amber-500" />
+            <div>
+              <h3 className="text-base font-semibold text-zinc-900">Top High-ROI Focus Skills</h3>
+              <p className="text-xs text-zinc-500">Highest success rate domains for accessible companies</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {highROISkills.map((skill, i) => (
+              <div key={skill.id} className="bg-zinc-50 rounded-lg p-4 border border-zinc-100">
+                <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2">Rank #{i + 1}</p>
+                <p className="text-sm font-medium text-zinc-900 mb-3">{skill.name}</p>
+                <div className="w-full bg-zinc-200 rounded-full h-1.5 mb-1.5">
+                  <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: `${skill.normalized}%` }}></div>
+                </div>
+                <p className="text-[10px] text-zinc-400">Relative ROI Score: {skill.normalized}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

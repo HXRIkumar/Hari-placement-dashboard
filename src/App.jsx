@@ -6,7 +6,7 @@ import MicroView from './components/MicroView';
 import { GraduationCap, Loader2 } from 'lucide-react';
 
 export default function App() {
-  const { profiles, stats, packageDist, isLoading, error } = useCSVData();
+  const { profiles, stats, packageDist, highROISkills, isLoading, error } = useCSVData();
   const { selectedCompany, clearSelection } = useCompany();
 
   if (isLoading) {
@@ -67,7 +67,7 @@ export default function App() {
         {selectedCompany ? (
           <MicroView company={selectedCompany} allProfiles={profiles} />
         ) : (
-          <MacroView profiles={profiles} stats={stats} packageDist={packageDist} />
+          <MacroView profiles={profiles} stats={stats} packageDist={packageDist} highROISkills={highROISkills} />
         )}
       </main>
     </div>
