@@ -1,3 +1,5 @@
+"use client";
+
 import { useCSVData } from './hooks/useCSVData';
 import { useCompany } from './context/CompanyContext';
 import { HARI_PROFILE } from './lib/constants';

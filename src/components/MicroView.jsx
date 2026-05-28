@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from 'react';
 import { useCompany } from '../context/CompanyContext';
 import SkillPriorityChart from './SkillPriorityChart';

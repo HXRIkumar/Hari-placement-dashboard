@@ -1,3 +1,5 @@
+"use client";
+
 import { PREP_TIMELINE } from '../lib/constants';
 import { Calendar, CheckCircle2 } from 'lucide-react';
 

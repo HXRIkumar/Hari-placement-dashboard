@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useMemo } from 'react';
 import { useCompany } from '../context/CompanyContext';
 import { HARI_PROFILE } from '../lib/constants';

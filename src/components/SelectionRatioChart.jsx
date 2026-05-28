@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { CONFIDENCE_THRESHOLD } from '../lib/engine';
